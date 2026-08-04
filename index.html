@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Metragem de Rolos de Adesivo</title>
+<meta name="description" content="Calcule rapidamente a metragem restante de um rolo de adesivo a partir do diâmetro externo.">
+
+<!-- Fontes: Space Grotesk para títulos, Inter para texto, JetBrains Mono para números -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============================================================
+     BARRA SUPERIOR
+     ============================================================ -->
+<header class="topbar">
+  <div class="topbar__inner">
+    <div class="brand">
+      <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <circle cx="20" cy="20" r="7" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M20 3 L20 8 M20 32 L20 37 M3 20 L8 20 M32 20 L37 20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <div class="brand__text">
+        <span class="brand__title">Rolômetro</span>
+        <span class="brand__subtitle">medição de rolos de adesivo</span>
+      </div>
+    </div>
+
+    <nav class="topnav" aria-label="Navegação principal">
+      <a href="#calculadora" class="topnav__link">Calculadora</a>
+      <a href="#comparador" class="topnav__link">Comparador</a>
+      <a href="#historico" class="topnav__link">Histórico</a>
+      <a href="#formula" class="topnav__link">Como funciona</a>
+    </nav>
+
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Alternar modo claro/escuro" title="Alternar tema">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M2 12h2.4M19.6 12H22M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============================================================
+       HERO / CABEÇALHO DA PÁGINA
+       ============================================================ -->
+  <section class="hero">
+    <div class="hero__inner">
+      <span class="eyebrow">Diâmetro → metragem, em segundos</span>
+      <h1 class="hero__title">Calculadora de Metragem de Rolos de Adesivo</h1>
+      <p class="hero__subtitle">Calcule rapidamente a quantidade aproximada de material restante no rolo.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CALCULADORA PRINCIPAL
+       ============================================================ -->
+  <section class="calculadora" id="calculadora">
+    <div class="calculadora__grid">
+
+      <!-- ---------- COLUNA DE ENTRADA ---------- -->
+      <div class="col-inputs">
+
+        <form id="formCalculo" novalidate>
+
+          <!-- Diâmetro externo -->
+          <div class="card">
+            <div class="card__head">
+              <h2 class="card__title">Diâmetro externo do rolo</h2>
+              <span class="card__unit">milímetros</span>
+            </div>
+            <div class="field">
+              <input type="number" id="diametroExterno" class="field__input field__input--big" placeholder="Ex.: 145" min="0.01" step="any" inputmode="decimal" autocomplete="off" aria-describedby="erroDiametroExterno">
+              <span class="field__suffix">mm</span>
+            </div>
+            <p class="field__error" id="erroDiametroExterno" role="alert"></p>
+          </div>
+
+          <!-- Diâmetro do tubete -->
+          <div class="card">
+            <div class="card__head">
+              <h2 class="card__title">Diâmetro do tubete</h2>
+              <span class="card__unit">milímetros</span>
+            </div>
+            <div class="quick-options" id="tubeteQuickOptions" role="group" aria-label="Diâmetros de tubete comuns">
+              <button type="button" class="chip" data-value="25">25 mm</button>
+              <button type="button" class="chip" data-value="38">38 mm</button>
+              <button type="button" class="chip" data-value="76">76 mm</button>
+            </div>
+            <div class="field">
+              <input type="number" id="diametroTubete" class="field__input" placeholder="Ou digite um valor" min="0.01" step="any" inputmode="decimal" autocomplete="off" aria-describedby="erroDiametroTubete">
+              <span class="field__suffix">mm</span>
+            </div>
+            <p class="field__error" id="erroDiametroTubete" role="alert"></p>
+          </div>
+
+          <!-- Espessura do material -->
+          <div class="card">
+            <div class="card__head">
+              <h2 class="card__title">Espessura do material</h2>
+              <span class="card__unit">milímetros</span>
+            </div>
+            <div class="field">
+              <select id="espessuraSelect" class="field__select">
+                <option value="0.06">0,06 mm</option>
+                <option value="0.08">0,08 mm</option>
+                <option value="0.10" selected>0,10 mm</option>
+                <option value="0.12">0,12 mm</option>
+                <option value="0.15">0,15 mm</option>
+                <option value="0.18">0,18 mm</option>
+                <option value="outro">Outro...</option>
+              </select>
+            </div>
+            <div class="field field--custom hidden" id="campoEspessuraCustom">
+              <input type="number" id="espessuraCustom" class="field__input" placeholder="Digite a espessura em mm" min="0.001" step="any" inputmode="decimal" autocomplete="off" aria-describedby="erroEspessura">
+              <span class="field__suffix">mm</span>
+            </div>
+            <p class="field__error" id="erroEspessura" role="alert"></p>
+          </div>
+
+          <!-- Precisão -->
+          <div class="card card--compact">
+            <div class="card__head">
+              <h2 class="card__title">Casas decimais</h2>
+            </div>
+            <div class="segmented" role="radiogroup" aria-label="Casas decimais do resultado">
+              <button type="button" class="segmented__option is-active" data-precision="2">2</button>
+              <button type="button" class="segmented__option" data-precision="3">3</button>
+              <button type="button" class="segmented__option" data-precision="4">4</button>
+            </div>
+          </div>
+
+          <!-- Ações -->
+          <div class="actions">
+            <button type="submit" class="btn btn--primary btn--big" id="btnCalcular">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+              Calcular Metragem
+            </button>
+            <div class="actions__row">
+              <button type="button" class="btn btn--ghost" id="btnExemplo">Exemplo</button>
+              <button type="button" class="btn btn--ghost" id="btnLimpar">Limpar</button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- ---------- COLUNA DO DIAGRAMA + RESULTADO ---------- -->
+      <div class="col-output">
+
+        <!-- Desenho técnico do rolo -->
+        <div class="card card--diagram">
+          <div class="card__head">
+            <h2 class="card__title">Corte transversal do rolo</h2>
+            <span class="card__unit">atualiza em tempo real</span>
+          </div>
+          <div class="diagram-wrap">
+            <svg id="rollDiagram" viewBox="0 0 320 320" role="img" aria-label="Desenho técnico do corte transversal do rolo"></svg>
+          </div>
+          <ul class="legend">
+            <li><span class="legend__swatch legend__swatch--tubete"></span>Tubete</li>
+            <li><span class="legend__swatch legend__swatch--material"></span>Material enrolado</li>
+            <li><span class="legend__swatch legend__swatch--dim"></span>Linhas de medição</li>
+          </ul>
+        </div>
+
+        <!-- Resultado -->
+        <div class="card card--result" id="cardResultado" aria-live="polite">
+          <div class="result-empty" id="resultEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+            <p>Preencha os campos ao lado e clique em <strong>Calcular Metragem</strong> para ver o resultado aqui.</p>
+          </div>
+
+          <div class="result-content hidden" id="resultContent">
+            <span class="result-label">📏 Metragem aproximada</span>
+            <div class="result-value">
+              <span id="resultMetros">0,00</span>
+              <span class="result-value__unit">metros</span>
+            </div>
+
+            <dl class="result-details">
+              <div class="result-details__item">
+                <dt>Comprimento em milímetros</dt>
+                <dd id="resultMm">—</dd>
+              </div>
+              <div class="result-details__item">
+                <dt>Diâmetro utilizado</dt>
+                <dd id="resultDiametro">—</dd>
+              </div>
+              <div class="result-details__item">
+                <dt>Tubete utilizado</dt>
+                <dd id="resultTubete">—</dd>
+              </div>
+              <div class="result-details__item">
+                <dt>Espessura utilizada</dt>
+                <dd id="resultEspessura">—</dd>
+              </div>
+            </dl>
+
+            <div class="actions__row">
+              <button type="button" class="btn btn--ghost" id="btnCopiar">Copiar Resultado</button>
+              <button type="button" class="btn btn--ghost" id="btnImprimir">Imprimir</button>
+            </div>
+            <p class="copy-feedback" id="copyFeedback" role="status"></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       COMPARADOR DE ROLOS
+       ============================================================ -->
+  <section class="comparador" id="comparador">
+    <div class="section-head">
+      <span class="eyebrow">Ferramenta extra</span>
+      <h2>Comparador de rolos</h2>
+      <p>Compare dois rolos lado a lado e veja a diferença em metros e em porcentagem.</p>
+    </div>
+
+    <div class="comparador__grid">
+      <div class="card compare-card">
+        <div class="card__head">
+          <h3 class="card__title">Rolo A</h3>
+        </div>
+        <label class="mini-field">Diâmetro externo (mm)
+          <input type="number" id="compA_D" class="field__input" placeholder="Ex.: 145" min="0.01" step="any">
+        </label>
+        <label class="mini-field">Diâmetro do tubete (mm)
+          <input type="number" id="compA_d" class="field__input" placeholder="Ex.: 76" min="0.01" step="any">
+        </label>
+        <label class="mini-field">Espessura (mm)
+          <input type="number" id="compA_e" class="field__input" placeholder="Ex.: 0,10" min="0.001" step="any">
+        </label>
+        <div class="compare-result" id="compA_result">— m</div>
+      </div>
+
+      <div class="compare-vs">
+        <span>VS</span>
+      </div>
+
+      <div class="card compare-card">
+        <div class="card__head">
+          <h3 class="card__title">Rolo B</h3>
+        </div>
+        <label class="mini-field">Diâmetro externo (mm)
+          <input type="number" id="compB_D" class="field__input" placeholder="Ex.: 110" min="0.01" step="any">
+        </label>
+        <label class="mini-field">Diâmetro do tubete (mm)
+          <input type="number" id="compB_d" class="field__input" placeholder="Ex.: 76" min="0.01" step="any">
+        </label>
+        <label class="mini-field">Espessura (mm)
+          <input type="number" id="compB_e" class="field__input" placeholder="Ex.: 0,10" min="0.001" step="any">
+        </label>
+        <div class="compare-result" id="compB_result">— m</div>
+      </div>
+    </div>
+
+    <div class="actions actions--center">
+      <button type="button" class="btn btn--primary" id="btnComparar">Comparar Rolos</button>
+    </div>
+
+    <div class="card compare-summary hidden" id="compareSummary">
+      <div class="compare-summary__item">
+        <span>Diferença em metros</span>
+        <strong id="compDiffMetros">—</strong>
+      </div>
+      <div class="compare-summary__item">
+        <span>Diferença percentual</span>
+        <strong id="compDiffPercent">—</strong>
+      </div>
+      <div class="compare-summary__item">
+        <span>Rolo com mais material</span>
+        <strong id="compWinner">—</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       HISTÓRICO
+       ============================================================ -->
+  <section class="historico" id="historico">
+    <div class="section-head section-head--row">
+      <div>
+        <span class="eyebrow">Últimos cálculos</span>
+        <h2>Histórico</h2>
+      </div>
+      <button type="button" class="btn btn--ghost btn--danger" id="btnLimparHistorico">Limpar Histórico</button>
+    </div>
+
+    <div class="table-wrap card">
+      <table class="table" id="tabelaHistorico">
+        <thead>
+          <tr>
+            <th>Data/Hora</th>
+            <th>Diâmetro</th>
+            <th>Tubete</th>
+            <th>Espessura</th>
+            <th>Resultado</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaHistoricoBody">
+          <!-- linhas inseridas via JavaScript -->
+        </tbody>
+      </table>
+      <p class="table-empty" id="historicoVazio">Nenhum cálculo realizado ainda. Seu histórico aparecerá aqui.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       COMO FUNCIONA / FÓRMULA
+       ============================================================ -->
+  <section class="formula-section" id="formula">
+    <div class="section-head">
+      <span class="eyebrow">Base técnica</span>
+      <h2>Como o cálculo é feito</h2>
+      <p>O método parte de uma ideia simples: o material enrolado forma um anel entre o tubete e a borda externa do rolo. Calculando a área desse anel e dividindo pela espessura do material, chegamos ao comprimento total da tira enrolada.</p>
+    </div>
+
+    <div class="formula-card card">
+      <div class="formula-display">
+        L&nbsp;=&nbsp;π&nbsp;×&nbsp;(D²&nbsp;−&nbsp;d²)&nbsp;/&nbsp;(4&nbsp;×&nbsp;e)
+      </div>
+      <ul class="formula-legend">
+        <li><strong>L</strong> — comprimento do material, em milímetros</li>
+        <li><strong>D</strong> — diâmetro externo do rolo, em milímetros</li>
+        <li><strong>d</strong> — diâmetro do tubete (núcleo), em milímetros</li>
+        <li><strong>e</strong> — espessura do material, em milímetros</li>
+        <li><strong>π</strong> — constante pi (≈ 3,14159)</li>
+      </ul>
+      <p class="formula-note">O resultado L é convertido para metros dividindo por 1000. Por se tratar de uma aproximação geométrica, pequenas variações de enrolamento e compactação do material podem gerar diferenças em relação ao valor real.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>Rolômetro — ferramenta de apoio para gráficas e empresas de comunicação visual. Os cálculos são aproximados.</p>
+</footer>
+
+<!-- Modelo de linha do histórico (usado pelo JavaScript) -->
+<template id="templateLinhaHistorico">
+  <tr>
+    <td data-col="data"></td>
+    <td data-col="diametro"></td>
+    <td data-col="tubete"></td>
+    <td data-col="espessura"></td>
+    <td data-col="resultado"></td>
+  </tr>
+</template>
+
+<script src="script.js"></script>
+</body>
+</html>
